@@ -1,0 +1,61 @@
+Goal:
+Produce a practical solver and visualizer for the standard 8x8 Knight's Tour problem.
+
+
+Key design decisions:
+
+Algorithm: Warnsdorff's heuristic
+
+It is simple, computationally cheap, and successful for generating full tours on standard chessboards.
+
+At each step, the heuristic chooses the unvisited neighbor with the minimum "onward degree".
+
+This algorithm is efficient and runs extremely fast on an 8x8 board.
+
+
+Tie-breaking strategy
+
+Tie-breaking among equal-degree moves is critical: deterministic first-choice tie-breaking can fail for some starting positions.
+
+Implemented randomized tie-breaking and a retries loop. Repeated randomized trials greatly increase the chance of finding a full tour without implementing expensive full backtracking.
+
+A configurable max_retries parameter allows trading compute time for success probability.
+
+
+Visualization
+
+Matplotlib chosen for portability and ease-of-use.
+
+The board is drawn as a checkerboard; the path is displayed with numbered nodes and connecting lines for readability.
+
+The visualization supports interactive starting-position selection with a mouse click.
+
+API and UX
+
+Command-line interface with options:
+
+--start accepts algebraic notation (e4) or two integers (row col).
+
+--no-visual for headless runs.
+
+--retries to tune robustness.
+
+Interactive selection (default when --start omitted) uses a click on the matplotlib board.
+
+Correctness vs. simplicity
+
+A full backtracking solver guarantees a solution if one exists, but is more complex to implement and slower in practice for 8x8.
+
+Warnsdorff + randomized tie-breaking is a pragmatic compromise: simple, fast, and successful in practice while keeping the code approachable and well-commented.
+
+Reproducibility
+
+Randomization is used; to reproduce a successful run, insert a random.seed(some_int) before find_tour_with_retries.
+
+The code prints the chosen path in algebraic format for external verification.
+
+Complexity
+
+Time per trial is O(N^2 * k) where k is constant bounded by the number of knight moves (≤8). For N=8, this is negligible.
+
+Memory is O(N^2) for the visited matrix and path.
